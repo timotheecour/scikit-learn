@@ -382,7 +382,7 @@ def linkage_tree(X, connectivity=None, n_components=None,
             'of %s, but %s was given' % (linkage_choices.keys(), linkage))
 
     if connectivity is None:
-        from scipy.cluster import hierarchy_custom     # imports PIL
+        from scipy.cluster import hierarchy     # imports PIL
 
         if n_clusters is not None:
             warnings.warn('Partial build of the tree is implemented '
@@ -409,7 +409,7 @@ def linkage_tree(X, connectivity=None, n_components=None,
             X = affinity(X)
             i, j = np.triu_indices(X.shape[0], k=1)
             X = X[i, j]
-        out = hierarchy_custom.linkage(X, method=linkage, metric=affinity)
+        out = hierarchy.linkage(X, method=linkage, metric=affinity)
         children_ = out[:, :2].astype(np.int)
 
         if return_distance:
@@ -854,9 +854,10 @@ class AgglomerativeClustering(BaseEstimator, ClusterMixin):
         if compute_full_tree:
             if self.threshold is not None:
                 idx = np.where(self.distances>=self.threshold)[0]
+                # print ("Maximum finite distance is " + str(np.max(self.distances[self.distances<float('inf')])))
                 if len(idx) == 0:
-                    print ("Distance threshod is set too high!")
-                    print ("Maximum distance is " + str(np.max(self.distances)))
+                    # print ("Distance threshod is set too high!")
+                    # print ("Maximum distance is " + str(np.max(self.distances)))
                     self.n_clusters = 1
                 else:
                     self.n_clusters = self.n_leaves_ - idx[0]
